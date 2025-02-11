@@ -1,5 +1,5 @@
 <?php
-	include('conn.php');
+	include('../conn.php');
 	
 	$firstname=$_POST['firstname'];
 	$lastname=$_POST['lastname'];

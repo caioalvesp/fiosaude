@@ -22,7 +22,7 @@
 			</thead>
 			<tbody>
 			<?php
-				include('conn.php');
+				include('../conn.php');
 				
 				$query=mysqli_query($conn,"select * from `user`");
 				while($row=mysqli_fetch_array($query)){
