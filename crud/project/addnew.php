@@ -1,11 +1,11 @@
 <?php
 	include('../conn.php');
-
-
-	$userid=$_GET['id'];
 	
-	$stmt = $conn->prepare("DELETE from user WHERE userid = ?");
-	$stmt->bind_param("s", $userid);
+	
+	$name=$_POST['name'];
+	
+	$stmt = $conn->prepare("INSERT INTO project (name) VALUES (?)");
+	$stmt->bind_param("s", $name);
 
 	if ($stmt->execute()) {
     echo "Registro inserido com sucesso!";

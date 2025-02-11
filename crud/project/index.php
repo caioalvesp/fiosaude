@@ -15,27 +15,20 @@
 		<div style="height:50px;"></div>
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
-				<th>Firstname</th>
-				<th>Lastname</th>
-				<th>Address</th>
-				<th>Salary</th>
-				<th>Action</th>
+				<th>Name</th>
 			</thead>
 			<tbody>
 			<?php
 				include('../conn.php');
 				
-				$query=mysqli_query($conn,"select * from `user`");
+				$query=mysqli_query($conn,"select * from `project`");
 				while($row=mysqli_fetch_array($query)){
 					?>
 					<tr>
-						<td><?php echo ucwords($row['firstname']); ?></td>
-						<td><?php echo ucwords($row['lastname']); ?></td>
-						<td><?php echo $row['address']; ?></td>
-						<td><?php printf("%.2f", (float)$row['salary']); ?></td>
+						<td><?php echo ucwords($row['name']); ?></td>
 						<td>
-							<a href="#edit<?php echo $row['userid']; ?>" data-toggle="modal" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> Edit</a> || 
-							<a href="#del<?php echo $row['userid']; ?>" data-toggle="modal" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+							<a href="#edit<?php echo $row['projectid']; ?>" data-toggle="modal" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> Edit</a> || 
+							<a href="#del<?php echo $row['projectid']; ?>" data-toggle="modal" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
 							<?php include('button.php'); ?>
 						</td>
 					</tr>

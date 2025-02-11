@@ -66,6 +66,14 @@
 							<input type="text" name="address" class="form-control" value="<?php echo $erow['address']; ?>">
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-lg-2">
+							<label style="position:relative; top:7px;">Salary:</label>
+						</div>
+						<div class="col-lg-10">
+							<input type="number" step=".01" name="salary" class="form-control" value="<?php echo $erow['salary']; ?>">
+						</div>
+					</div>
                 </div> 
 				</div>
                 <div class="modal-footer">
