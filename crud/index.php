@@ -44,7 +44,7 @@
 			</tbody>
 		</table>
 	</div>
-	<?php include('add_modal.php'); ?>
+	<?php require_once('add_modal.php'); ?>	
 </div>
 </body>
 </html>
