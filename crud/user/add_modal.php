@@ -1,4 +1,8 @@
-<!-- Add New -->
+<?php
+$query = "SELECT departmentid, name FROM department ORDER BY name";
+$result = mysqli_query($conn, $query);
+?>
+
 <div class="modal fade" id="addnew" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -46,8 +50,24 @@
 								<input type="number" step=".01" class="form-control" name="salary">
 							</div>
 						</div>
-
 						<div style="height:10px;"></div>
+						<div class="row">
+							<div class="col-lg-2">
+								<label class="control-label" style="position:relative; top:7px;">Departamento:</label>
+							</div>
+							<div class="col-lg-10">
+								<select name="departament_id" class="form-control" required>
+									<option value="">Selecione um departamento</option>
+									<?php
+									if (mysqli_num_rows($result) > 0) {
+										while ($row = mysqli_fetch_assoc($result)) {
+											echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>';
+										}
+									}
+									?>
+								</select>
+							</div>
+						</div>
 
 				</div>
 			</div>
