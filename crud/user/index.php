@@ -10,24 +10,36 @@
 
 <body>
 	<div class="container">
-		<div style="height:50px;"></div>
-		<div class="well" style="margin:auto; padding:auto; width:80%;">
-			<span style="font-size:25px; color:blue">
-				<center><strong>PHP/MySQLi CRUD Operation using Bootstrap</strong></center>
-			</span>
-			<span class="pull-left"><a href="#addnew" data-toggle="modal" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add New</a></span>
-			<div style="height:50px;"></div>
+		<div class="text-center" style="margin: 20px 0;">
+			<h2 class="text-primary" style="font-size: 22px;"><strong>Usuários</strong></h2>
+		</div>
+
+		<div class="text-center">
+			<div class="btn-group">
+				<a href="../department/index.php" class="btn btn-info"><span class="glyphicon glyphicon-th-list"></span> Departamentos</a>
+				<a href="../project/index.php" class="btn btn-success"><span class="glyphicon glyphicon-folder-open"></span> Projetos</a>
+			</div>
+		</div>
+
+		<div style="margin: 20px 0;">
+			<a href="#addnew" data-toggle="modal" class="btn btn-primary">
+				<span class="glyphicon glyphicon-plus"></span> Add New
+			</a>
+		</div>
+
+		<div class="table-responsive">
 			<table class="table table-striped table-bordered table-hover">
 				<thead>
-					<th>Firstname</th>
-					<th>Lastname</th>
-					<th>Address</th>
-					<th>Salary</th>
-					<th>Department</th>
-					<th>Projects</th>
-					<th>Action</th>
+					<tr>
+						<th>Firstname</th>
+						<th>Lastname</th>
+						<th>Address</th>
+						<th>Salary</th>
+						<th>Department</th>
+						<th>Projects</th>
+						<th>Action</th>
+					</tr>
 				</thead>
-
 				<tbody>
 					<?php
 					include('../conn.php');
@@ -42,8 +54,7 @@
 					LEFT JOIN `project-user` pu ON u.userid = pu.userid
 					LEFT JOIN project p ON pu.projectid = p.projectid
 					GROUP BY u.userid, u.firstname, u.lastname, u.address, u.salary;
-			");
-
+					");
 
 					while ($row = mysqli_fetch_array($query)) {
 					?>
@@ -55,8 +66,8 @@
 							<td><?php echo $row['department_name'] ? ucwords($row['department_name']) : 'Não atribuído'; ?></td>
 							<td><?php echo $row['project_names'] ? ucwords($row['project_names']) : 'Sem projetos'; ?></td>
 							<td>
-								<a href="#edit<?php echo $row['userid']; ?>" data-toggle="modal" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> Edit</a> ||
-								<a href="#del<?php echo $row['userid']; ?>" data-toggle="modal" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+								<a href="#edit<?php echo $row['userid']; ?>" data-toggle="modal" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+								<a href="#del<?php echo $row['userid']; ?>" data-toggle="modal" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete</a>
 								<?php include('button.php'); ?>
 							</td>
 						</tr>
