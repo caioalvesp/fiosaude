@@ -1,19 +1,30 @@
 <?php
-	include('../conn.php');
+include('../conn.php');
 
+$userid = $_GET['id'];
 
-	$userid=$_GET['id'];
-	
-	$stmt = $conn->prepare("DELETE from user WHERE userid = ?");
-	$stmt->bind_param("s", $userid);
+try {
+	$stmt = $conn->prepare("DELETE FROM `department-user` WHERE userid = ?");
+	$stmt->bind_param("i", $userid);
+	if (!$stmt->execute()) {
+		throw new Exception("Erro ao remover relação departamento-usuário: " . $stmt->error);
+	}
 
+	$stmt = $conn->prepare("DELETE FROM `project-user` WHERE userid = ?");
+	$stmt->bind_param("i", $userid);
+	if (!$stmt->execute()) {
+		throw new Exception("Erro ao remover relação projeto-usuário: " . $stmt->error);
+	}
+
+	$stmt = $conn->prepare("DELETE FROM `user` WHERE userid = ?");
+	$stmt->bind_param("i", $userid);
 	if ($stmt->execute()) {
-    echo "Registro inserido com sucesso!";
-} else {
-    echo "Erro ao inserir registro: " . $stmt->error;
+		echo "Usuário excluído com sucesso!";
+	} else {
+		throw new Exception("Erro ao excluir usuário: " . $stmt->error);
+	}
+} catch (Exception $e) {
+	echo "Erro: " . $e->getMessage();
 }
 
-
-	header('location:index.php');
-
-?>
+header('location:index.php');

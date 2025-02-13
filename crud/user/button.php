@@ -42,14 +42,19 @@
 			<div class="modal-body">
 				<?php
 				$edit = mysqli_query($conn, "
-                    SELECT u.*, du.departmentid 
-                    FROM user u 
-                    LEFT JOIN `department-user` du ON u.userid = du.userid 
-                    WHERE u.userid='" . $row['userid'] . "'
-                ");
+						SELECT u.*, du.departmentid, GROUP_CONCAT(p.projectid) AS projects 
+						FROM user u 
+						LEFT JOIN `department-user` du ON u.userid = du.userid 
+						LEFT JOIN `project-user` pu ON u.userid = pu.userid
+						LEFT JOIN project p ON pu.projectid = p.projectid
+						WHERE u.userid='" . $row['userid'] . "'
+						GROUP BY u.userid, du.departmentid
+					");
+
 				$erow = mysqli_fetch_array($edit);
 
 				$dept_query = mysqli_query($conn, "SELECT departmentid, name FROM department ORDER BY name");
+				$projects_selected = explode(',', $erow['projects']);
 				?>
 				<div class="container-fluid">
 					<form method="POST" action="edit.php?id=<?php echo $erow['userid']; ?>">
@@ -100,6 +105,23 @@
 									while ($dept = mysqli_fetch_array($dept_query)) {
 										$selected = ($dept['departmentid'] == $erow['departmentid']) ? 'selected' : '';
 										echo '<option value="' . $dept['departmentid'] . '" ' . $selected . '>' . $dept['name'] . '</option>';
+									}
+									?>
+								</select>
+							</div>
+						</div>
+						<div style="height:10px;"></div>
+						<div class="row">
+							<div class="col-lg-2">
+								<label style="position:relative; top:7px;">Projects:</label>
+							</div>
+							<div class="col-lg-10">
+								<select name="projects[]" class="form-control" multiple>
+									<?php
+									$project_query = mysqli_query($conn, "SELECT * FROM project");
+									while ($project = mysqli_fetch_array($project_query)) {
+										$selected = in_array($project['projectid'], $projects_selected) ? 'selected' : '';
+										echo '<option value="' . $project['projectid'] . '" ' . $selected . '>' . $project['name'] . '</option>';
 									}
 									?>
 								</select>

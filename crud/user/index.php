@@ -24,18 +24,26 @@
 					<th>Address</th>
 					<th>Salary</th>
 					<th>Department</th>
+					<th>Projects</th>
 					<th>Action</th>
 				</thead>
+
 				<tbody>
 					<?php
 					include('../conn.php');
 
 					$query = mysqli_query($conn, "
-                    SELECT u.*, d.name as department_name 
-                    FROM user u 
-                    LEFT JOIN `department-user` du ON u.userid = du.userid 
-                    LEFT JOIN department d ON du.departmentid = d.departmentid
-                ");
+					SELECT u.userid, u.firstname, u.lastname, u.address, u.salary, 
+								 ANY_VALUE(d.name) AS department_name, 
+								 COALESCE(GROUP_CONCAT(DISTINCT p.name ORDER BY p.name SEPARATOR ', '), 'Sem projetos') AS project_names 
+					FROM user u 
+					LEFT JOIN `department-user` du ON u.userid = du.userid 
+					LEFT JOIN department d ON du.departmentid = d.departmentid
+					LEFT JOIN `project-user` pu ON u.userid = pu.userid
+					LEFT JOIN project p ON pu.projectid = p.projectid
+					GROUP BY u.userid, u.firstname, u.lastname, u.address, u.salary;
+			");
+
 
 					while ($row = mysqli_fetch_array($query)) {
 					?>
@@ -45,6 +53,7 @@
 							<td><?php echo $row['address']; ?></td>
 							<td><?php printf("%.2f", (float)$row['salary']); ?></td>
 							<td><?php echo $row['department_name'] ? ucwords($row['department_name']) : 'Não atribuído'; ?></td>
+							<td><?php echo $row['project_names'] ? ucwords($row['project_names']) : 'Sem projetos'; ?></td>
 							<td>
 								<a href="#edit<?php echo $row['userid']; ?>" data-toggle="modal" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> Edit</a> ||
 								<a href="#del<?php echo $row['userid']; ?>" data-toggle="modal" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>

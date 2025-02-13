@@ -1,6 +1,9 @@
 <?php
-$query = "SELECT departmentid, name FROM department ORDER BY name";
-$result = mysqli_query($conn, $query);
+$query_departments = "SELECT departmentid, name FROM department ORDER BY name";
+$result_departments = mysqli_query($conn, $query_departments);
+
+$query_projects = "SELECT projectid, name FROM project ORDER BY name";
+$result_projects = mysqli_query($conn, $query_projects);
 ?>
 
 <div class="modal fade" id="addnew" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -59,24 +62,48 @@ $result = mysqli_query($conn, $query);
 								<select name="departament_id" class="form-control" required>
 									<option value="">Selecione um departamento</option>
 									<?php
-									if (mysqli_num_rows($result) > 0) {
-										while ($row = mysqli_fetch_assoc($result)) {
-											echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>';
-										}
+									while ($row = mysqli_fetch_assoc($result_departments)) {
+										echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>';
 									}
 									?>
 								</select>
+							</div>
+						</div>
+						<div style="height:10px;"></div>
+
+						<div class="row">
+							<div class="col-lg-2">
+								<label class="control-label" style="position:relative; top:7px;">Projetos:</label>
+							</div>
+							<div class="col-lg-10">
+								<select name="projects[]" class="form-control" multiple required>
+									<option value="">Selecione um ou mais projetos</option>
+									<?php
+									$query = "SELECT projectid, name FROM project ORDER BY name";
+									$result = mysqli_query($conn, $query);
+
+									while ($row = mysqli_fetch_assoc($result)) {
+										echo '<option value="' . $row['projectid'] . '">' . $row['name'] . '</option>';
+									}
+									?>
+								</select>
+
+
+								<small>Segure Ctrl (Windows) ou Command (Mac) para selecionar múltiplos projetos.</small>
 							</div>
 						</div>
 
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
-				<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</a>
-					</form>
+				<button type="button" class="btn btn-default" data-dismiss="modal">
+					<span class="glyphicon glyphicon-remove"></span> Cancel
+				</button>
+				<button type="submit" class="btn btn-primary">
+					<span class="glyphicon glyphicon-floppy-disk"></span> Save
+				</button>
+				</form>
 			</div>
-
 		</div>
 	</div>
 </div>

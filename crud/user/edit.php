@@ -1,22 +1,52 @@
 <?php
 include('../conn.php');
-
-$id = $_GET['id'];
+$userid = $_GET['id'];
 
 $firstname = $_POST['firstname'];
 $lastname = $_POST['lastname'];
 $address = $_POST['address'];
-$salary = (int)$_POST['salary'];
-$department_id = $_POST['department_id'];
+$salary = $_POST['salary'];
+$departmentid = $_POST['department_id'];
+$projects = isset($_POST['projects']) ? $_POST['projects'] : [];
 
-mysqli_query($conn, "UPDATE user SET firstname='$firstname', lastname='$lastname', address='$address', salary=$salary WHERE userid='$id'");
 
-$checkDept = mysqli_query($conn, "SELECT * FROM `department-user` WHERE userid='$id'");
+$conn->begin_transaction();
 
-if (mysqli_num_rows($checkDept) > 0) {
-	mysqli_query($conn, "UPDATE `department-user` SET departmentid='$department_id' WHERE userid='$id'");
-} else {
-	mysqli_query($conn, "INSERT INTO `department-user` (userid, departmentid) VALUES ('$id', '$department_id')");
+try {
+	$stmt = $conn->prepare("UPDATE user SET firstname = ?, lastname = ?, address = ?, salary = ? WHERE userid = ?");
+	$stmt->bind_param("sssii", $firstname, $lastname, $address, $salary, $userid);
+	if (!$stmt->execute()) {
+		throw new Exception("Erro ao atualizar usuário: " . $stmt->error);
+	}
+
+	$stmt = $conn->prepare("UPDATE `department-user` SET departmentid = ? WHERE userid = ?");
+	$stmt->bind_param("ii", $departmentid, $userid);
+	if (!$stmt->execute()) {
+		throw new Exception("Erro ao atualizar relação de departamento: " . $stmt->error);
+	}
+
+	$stmt = $conn->prepare("DELETE FROM `project-user` WHERE userid = ?");
+	$stmt->bind_param("i", $userid);
+	if (!$stmt->execute()) {
+		throw new Exception("Erro ao remover projetos antigos: " . $stmt->error);
+	}
+
+	if (!empty($projects)) {
+		$stmt = $conn->prepare("INSERT INTO `project-user` (projectid, userid) VALUES (?, ?)");
+		foreach ($projects as $projectid) {
+			$stmt->bind_param("ii", $projectid, $userid);
+			if (!$stmt->execute()) {
+				throw new Exception("Erro ao adicionar novo projeto: " . $stmt->error);
+			}
+		}
+	}
+
+	$conn->commit();
+	echo "Registro atualizado com sucesso!";
+} catch (Exception $e) {
+	$conn->rollback();
+	echo "Erro: " . $e->getMessage();
 }
 
 header('location:index.php');
+exit;
